@@ -1,0 +1,12 @@
+{
+  "source_xlsx": "https://abdc.edu.au/wp-content/uploads/2026/06/ABDC-JQL-2025-v2-270526.xlsx",
+  "sha256": "f8fd5c563a8b1dd4bfb8adbc3211e79d7c33e267522b3eacce301c9ffd73f09c",
+  "jql_year": "2025",
+  "generated_utc": "2026-07-06T01:37:52+00:00",
+  "total_listed": 2649,
+  "kept": {
+    "A*": 219,
+    "A": 630,
+    "B": 860
+  }
+}
