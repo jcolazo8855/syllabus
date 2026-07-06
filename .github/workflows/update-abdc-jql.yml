@@ -1,0 +1,46 @@
+name: Update ABDC Journal Quality List
+
+on:
+  schedule:
+    - cron: '17 6 3 * *'   # 06:17 UTC on the 3rd of every month
+  workflow_dispatch: {}
+  push:
+    paths:
+      - 'research/abdc/scripts/**'
+      - 'research/abdc/overrides.json'
+      - '.github/workflows/update-abdc-jql.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-abdc-jql-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r research/abdc/requirements.txt
+
+      - name: Rebuild ABDC journal database
+        run: python research/abdc/scripts/update_jql.py
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/abdc/data
+          if git diff --cached --quiet; then
+            echo "Database unchanged — nothing to commit."
+          else
+            git commit -m "chore: refresh ABDC JQL journal database ($(date -u +%Y-%m-%d))"
+            git push
+          fi
